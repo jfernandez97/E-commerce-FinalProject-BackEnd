@@ -21,5 +21,4 @@ public class ProductDocument {
     private String description;
     private LocalDateTime creationDate;
     private LocalDateTime modificationDate;
-    private boolean status;
 }

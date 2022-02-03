@@ -1,6 +1,7 @@
 package com.ecommerce.ecommercefinal.service.implementation;
 
 import com.ecommerce.ecommercefinal.builder.ProductBuilder;
+import com.ecommerce.ecommercefinal.handler.ApiRestException;
 import com.ecommerce.ecommercefinal.model.request.ProductRequest;
 import com.ecommerce.ecommercefinal.model.response.ProductResponse;
 import com.ecommerce.ecommercefinal.repository.ProductRepository;
@@ -21,16 +22,15 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
 
     @Override
-    public ProductResponse create(ProductRequest request) throws Exception {
-
+    public ProductResponse create(ProductRequest request) throws ApiRestException {
         validateRequestCreate(request);
         var document = repository.save(ProductBuilder.requestToDocumentCreate(request));
         return ProductBuilder.documentToResponseCreate(document);
     }
 
     @Override
-    public ProductResponse update(String code, ProductRequest request) throws Exception {
-        validateRequestUpdate(code);
+    public ProductResponse update(String code, ProductRequest request) throws ApiRestException {
+        validateRequestExists(code);
         var product = repository.findByCode(code);
         product.setPrice(request.getPrice());
         product.setDescription(request.getDescription());
@@ -46,20 +46,30 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse getByCode(String code) {
+    public ProductResponse getByCode(String code) throws ApiRestException {
+        if(Objects.isNull(repository.findByCode(code))){
+            throw new ApiRestException(code,"Error, el producto que intenta buscar no existe");
+        }
         return ProductBuilder.documentToResponse(repository.findByCode(code));
     }
 
-    private void validateRequestCreate(ProductRequest request) throws Exception {
+    @Override
+    public void delete(String code) throws ApiRestException {
+        validateRequestExists(code);
+        var product =repository.findByCode(code);
+        repository.delete(product);
+    }
+
+    private void validateRequestCreate(ProductRequest request) throws ApiRestException {
         var product = repository.findByCode(request.getCode());
         if(!Objects.isNull(product)){
-           throw new Exception("El producto ya existe");
+           throw new ApiRestException(request.getCode(),"Error, el producto ya existe");
         }
     }
-    private void validateRequestUpdate(String code) throws Exception {
+    private void validateRequestExists(String code) throws ApiRestException{
         var product = repository.findByCode(code);
         if(Objects.isNull(product)){
-            throw new Exception("El producto que intenta modificar no existe");
+            throw new ApiRestException(code,"Error,el producto no existe");
         }
     }
 }

@@ -16,5 +16,4 @@ public class ProductResponse {
     private String description;
     private LocalDateTime creationTime;
     private LocalDateTime modificationDate;
-    private boolean status;
 }

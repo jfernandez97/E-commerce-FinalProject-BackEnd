@@ -17,7 +17,6 @@ public class ProductBuilder {
                 .price(request.getPrice())
                 .description(request.getDescription())
                 .creationDate(LocalDateTime.now())
-                .status(Boolean.TRUE)
                 .build();
     }
     public static ProductResponse documentToResponseCreate(ProductDocument document){
@@ -25,24 +24,14 @@ public class ProductBuilder {
                 .code(document.getCode())
                 .creationTime(document.getCreationDate())
                 .modificationDate(document.getModificationDate())
-                .status(document.isStatus())
                 .build();
     }
-//    public static ProductDocument requestToDocumentUpdate(ProductRequest request){
-//        return ProductDocument.builder()
-//                .code(request.getCode())
-//                .category(request.getCategory())
-//                .price(request.getPrice())
-//                .description(request.getDescription())
-//                .modificationDate(LocalDateTime.now())
-//                .build();
-//    }
+
     public static ProductResponse documentToResponseUpdate(ProductDocument document){
         return ProductResponse.builder()
                 .code(document.getCode())
                 .creationTime(document.getCreationDate())
                 .modificationDate(document.getModificationDate())
-                .status(document.isStatus())
                 .build();
     }
     public static  ProductResponse documentToResponse(ProductDocument document){
@@ -53,7 +42,6 @@ public class ProductBuilder {
                 .description(document.getDescription())
                 .creationTime(document.getCreationDate())
                 .modificationDate(document.getModificationDate())
-                .status(document.isStatus())
                 .build();
     }
     public static List<ProductResponse> listDocumentToResponse(List<ProductDocument> documents){
