@@ -6,6 +6,12 @@ spring:
       database: ecommercefinal
       host: localhost
       port: 27017
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
+    timeOfLife: 1800000
 jwt:
   expiration: 60000
   secret: springbootjwtcoderhouse
