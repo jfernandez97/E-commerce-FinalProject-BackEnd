@@ -2,6 +2,7 @@ package com.ecommerce.ecommercefinal.service.implementation;
 
 import com.ecommerce.ecommercefinal.builder.ProductBuilder;
 import com.ecommerce.ecommercefinal.handler.ApiRestException;
+import com.ecommerce.ecommercefinal.model.document.ProductDocument;
 import com.ecommerce.ecommercefinal.model.request.ProductRequest;
 import com.ecommerce.ecommercefinal.model.response.ProductResponse;
 import com.ecommerce.ecommercefinal.repository.ProductRepository;
@@ -51,6 +52,14 @@ public class ProductServiceImpl implements ProductService {
             throw new ApiRestException(code,"Error, el producto que intenta buscar no existe");
         }
         return ProductBuilder.documentToResponse(repository.findByCode(code));
+    }
+
+    @Override
+    public List<ProductResponse> getByCategory(String category) throws ApiRestException {
+        if(repository.findByCategory(category).isEmpty()){
+            throw new ApiRestException(category,"Error, la categoria que intenta buscar no existe");
+        }
+        return ProductBuilder.listDocumentToResponse(repository.findByCategory(category));
     }
 
     @Override

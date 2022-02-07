@@ -10,43 +10,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductBuilder {
-    public static ProductDocument requestToDocumentCreate(ProductRequest request){
+    public static ProductDocument requestToDocumentCreate(ProductRequest productRequest){
         return ProductDocument.builder()
-                .code(request.getCode())
-                .category(request.getCategory())
-                .price(request.getPrice())
-                .description(request.getDescription())
+                .code(productRequest.getCode())
+                .category(productRequest.getCategory())
+                .price(productRequest.getPrice())
+                .description(productRequest.getDescription())
                 .creationDate(LocalDateTime.now())
                 .build();
     }
-    public static ProductResponse documentToResponseCreate(ProductDocument document){
+    public static ProductResponse documentToResponseCreate(ProductDocument productDocument){
         return ProductResponse.builder()
-                .code(document.getCode())
-                .creationTime(document.getCreationDate())
-                .modificationDate(document.getModificationDate())
+                .code(productDocument.getCode())
+                .creationTime(productDocument.getCreationDate())
+                .modificationDate(productDocument.getModificationDate())
                 .build();
     }
 
-    public static ProductResponse documentToResponseUpdate(ProductDocument document){
+    public static ProductResponse documentToResponseUpdate(ProductDocument productDocument){
         return ProductResponse.builder()
-                .code(document.getCode())
-                .creationTime(document.getCreationDate())
-                .modificationDate(document.getModificationDate())
+                .code(productDocument.getCode())
+                .creationTime(productDocument.getCreationDate())
+                .modificationDate(productDocument.getModificationDate())
                 .build();
     }
-    public static  ProductResponse documentToResponse(ProductDocument document){
+    public static  ProductResponse documentToResponse(ProductDocument productDocument){
         return ProductResponse.builder()
-                .code(document.getCode())
-                .category(document.getCategory())
-                .price(document.getPrice())
-                .description(document.getDescription())
-                .creationTime(document.getCreationDate())
-                .modificationDate(document.getModificationDate())
+                .code(productDocument.getCode())
+                .category(productDocument.getCategory())
+                .price(productDocument.getPrice())
+                .description(productDocument.getDescription())
+                .creationTime(productDocument.getCreationDate())
+                .modificationDate(productDocument.getModificationDate())
                 .build();
     }
-    public static List<ProductResponse> listDocumentToResponse(List<ProductDocument> documents){
+    public static List<ProductResponse> listDocumentToResponse(List<ProductDocument> productDocuments){
         var listResponse =  new ArrayList<ProductResponse>();
-        documents.forEach(doc ->listResponse.add(documentToResponse(doc)));
+        productDocuments.forEach(doc ->listResponse.add(documentToResponse(doc)));
         return listResponse;
     }
 

@@ -1,6 +1,7 @@
 package com.ecommerce.ecommercefinal.service;
 
 import com.ecommerce.ecommercefinal.handler.ApiRestException;
+import com.ecommerce.ecommercefinal.model.document.ProductDocument;
 import com.ecommerce.ecommercefinal.model.request.ProductRequest;
 import com.ecommerce.ecommercefinal.model.response.ProductResponse;
 
@@ -11,6 +12,8 @@ public interface ProductService {
     ProductResponse update(String code,ProductRequest request) throws ApiRestException;
     List<ProductResponse> getAll();
     ProductResponse getByCode(String code) throws ApiRestException;
+    List<ProductResponse> getByCategory(String category) throws ApiRestException;
     void delete(String code)throws ApiRestException;
+
 
 }

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 
 @RestController
@@ -37,6 +38,10 @@ public class ProductController {
     @GetMapping("/{code}")
     public ProductResponse getByCode (@PathVariable String code)throws ApiRestException{
         return service.getByCode(code);
+    }
+    @GetMapping("/")
+    public List<ProductResponse> getByCategory(@RequestParam String category) throws ApiRestException{
+        return service.getByCategory(category);
     }
 
     @GetMapping
