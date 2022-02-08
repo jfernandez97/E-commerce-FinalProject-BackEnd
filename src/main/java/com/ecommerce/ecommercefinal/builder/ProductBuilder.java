@@ -19,13 +19,13 @@ public class ProductBuilder {
                 .creationDate(LocalDateTime.now())
                 .build();
     }
-    public static ProductResponse documentToResponseCreate(ProductDocument productDocument){
-        return ProductResponse.builder()
-                .code(productDocument.getCode())
-                .creationTime(productDocument.getCreationDate())
-                .modificationDate(productDocument.getModificationDate())
-                .build();
-    }
+//    public static ProductResponse documentToResponseCreate(ProductDocument productDocument){
+//        return ProductResponse.builder()
+//                .code(productDocument.getCode())
+//                .creationTime(productDocument.getCreationDate())
+//                .modificationDate(productDocument.getModificationDate())
+//                .build();
+//    }
 
     public static ProductResponse documentToResponseUpdate(ProductDocument productDocument){
         return ProductResponse.builder()

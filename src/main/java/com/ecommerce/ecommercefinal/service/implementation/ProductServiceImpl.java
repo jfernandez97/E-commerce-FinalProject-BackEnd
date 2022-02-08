@@ -26,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse create(ProductRequest request) throws ApiRestException {
         validateRequestCreate(request);
         var document = repository.save(ProductBuilder.requestToDocumentCreate(request));
-        return ProductBuilder.documentToResponseCreate(document);
+        return ProductBuilder.documentToResponse(document);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
            throw new ApiRestException(request.getCode(),"Error, el producto ya existe");
         }
     }
-    private void validateRequestExists(String code) throws ApiRestException{
+    private void validateRequestExists(String code) throws ApiRestException {
         var product = repository.findByCode(code);
         if(Objects.isNull(product)){
             throw new ApiRestException(code,"Error,el producto no existe");

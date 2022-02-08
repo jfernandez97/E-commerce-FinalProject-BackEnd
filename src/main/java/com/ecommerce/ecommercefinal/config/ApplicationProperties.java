@@ -24,4 +24,10 @@ public class ApplicationProperties {
     @Value(value = "${jwt.expiration}")
     private int expiration;
 
+    @Value(value = "${spring.mail.username}")
+    private String username;
+    @Value(value = "${spring.mail.password}")
+    private String password;
+
+
 }
