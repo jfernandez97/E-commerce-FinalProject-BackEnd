@@ -8,6 +8,7 @@ import com.ecommerce.ecommercefinal.model.request.CartRequest;
 import com.ecommerce.ecommercefinal.model.response.CartResponse;
 import com.ecommerce.ecommercefinal.repository.CartRepository;
 import com.ecommerce.ecommercefinal.repository.ProductRepository;
+import com.ecommerce.ecommercefinal.repository.UserRepository;
 import com.ecommerce.ecommercefinal.service.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,42 +24,78 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public CartResponse create(CartRequest cartRequest) throws ApiRestException {
+    public CartResponse createCart(CartRequest cartRequest) throws ApiRestException {
         validateCartCreate(cartRequest);
         CartDocument cartDocumentFound = cartRepository.save(CartBuilder.requestToDocumentCreate(cartRequest));
         return CartBuilder.documentToResponse(cartDocumentFound);
     }
 
     @Override
-    public List<CartResponse> getAll() {
+    public List<CartResponse> getAllCarts() {
         return CartBuilder.listDocumentToResponse(cartRepository.findAll());
     }
 
+
     @Override
-    public CartResponse update(Integer orderNumber, CartItem cartItem) {
-        return null;
+    public void deleteCart(Integer orderNumber) throws ApiRestException {
+        validateCartExists(orderNumber);
+        var cartFound = cartRepository.findByOrderNumber(orderNumber);
+        cartRepository.delete(cartFound);
+
     }
 
     @Override
-    public void delete(Integer orderNumber) {
+    public CartResponse addItem(Integer orderNumber, CartItem cartItem) throws ApiRestException {
 
-    }
-
-    @Override
-    public CartResponse addProduct(Integer orderNumber,CartItem cartItem) throws ApiRestException {
         validateCartExists(orderNumber);
         validateProductExists(cartItem.getCode());
         CartDocument cartDocumentFound = cartRepository.findByOrderNumber(orderNumber);
+        validateItemNotExists(cartItem.getCode(),cartDocumentFound);
+        cartDocumentFound.getProducts().add(cartItem);
+        cartRepository.save(cartDocumentFound);
+
+        return CartBuilder.documentToResponse(cartDocumentFound);
+    }
+    @Override
+    public CartResponse updateCartItem(Integer orderNumber, CartItem cartItem) throws ApiRestException {
+        validateCartExists(orderNumber);
+        validateProductExists(cartItem.getCode());
+        var cartDocumentFound =cartRepository.findByOrderNumber(orderNumber);
         validateItemExists(cartItem.getCode(),cartDocumentFound);
+        CartItem cartItemFound = getCartItemByCode(cartItem.getCode(), cartDocumentFound.getProducts());
+        cartDocumentFound.getProducts().remove(cartItemFound);
         cartDocumentFound.getProducts().add(cartItem);
         cartRepository.save(cartDocumentFound);
         return CartBuilder.documentToResponse(cartDocumentFound);
     }
 
     @Override
+    public void deleteCartItem(Integer orderNumber, String code) throws ApiRestException {
+        validateCartExists(orderNumber);
+        validateProductExists(code);
+        var cartDocumentFound =cartRepository.findByOrderNumber(orderNumber);
+        validateItemExists(code,cartDocumentFound);
+        var cartItemFound =getCartItemByCode(code,cartDocumentFound.getProducts());
+        cartDocumentFound.getProducts().remove(cartItemFound);
+        cartRepository.save(cartDocumentFound);
+
+    }
+
+    @Override
     public List<CartItem> getAllItems(Integer orderNumber) throws ApiRestException {
+
+        validateCartExists(orderNumber);
+        CartDocument cartDocumentFound = cartRepository.findByOrderNumber(orderNumber);
+
+        return cartDocumentFound.getProducts();
+    }
+
+    @Override
+    public List<CartItem> generateOrder(Integer orderNumber) throws ApiRestException {
+
         validateCartExists(orderNumber);
         CartDocument cartDocumentFound = cartRepository.findByOrderNumber(orderNumber);
 
@@ -70,6 +107,9 @@ public class CartServiceImpl implements CartService {
         var cart=cartRepository.findByEmail(cartRequest.getEmail());
         if(Objects.nonNull(cart)){
             throw new ApiRestException(cartRequest.getEmail(),"Error, el carrito con ese email ya existe");
+        }
+        if(Objects.isNull(userRepository.findByEmail(cartRequest.getEmail()))){
+            throw new ApiRestException(cartRequest.getEmail(),"Error el usuario con ese email no esta registrado");
         }
     }
     private void validateCartExists(Integer orderNumber) throws ApiRestException {
@@ -84,12 +124,31 @@ public class CartServiceImpl implements CartService {
             throw new ApiRestException(code,"Error, el producto con ese code no existe");
         }
     }
-    private void validateItemExists(String code,CartDocument cartDocument) throws ApiRestException {
+    private void validateItemNotExists(String code,CartDocument cartDocument) throws ApiRestException {
         for(CartItem c: cartDocument.getProducts()){
             if(c.getCode().equals(code)){
                 throw new ApiRestException(code,"El producto ya esta en el carrito");
             }
         }
     }
-
+    private void validateItemExists(String code,CartDocument cartDocument) throws ApiRestException {
+        CartItem itemFound = null;
+        for(CartItem c: cartDocument.getProducts()){
+            if(c.getCode().equals(code)){
+                itemFound =c;
+            }
+        }
+        if ((Objects.isNull(itemFound))){
+            throw new ApiRestException(code,"El producto que intenta modificar no esta en el carrito");
+        }
+    }
+    private CartItem getCartItemByCode(String code,List<CartItem> cartItems){
+        CartItem itemFound = null;
+        for(CartItem cartItem: cartItems){
+            if(cartItem.getCode().equals(code)){
+                itemFound = cartItem;
+            }
+        }
+        return itemFound;
+    }
 }
