@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface EmailService {
     void sendEmail();
-    void sendMailWithOrder(String content);
+    void sendMailWithOrder(List<CartItem> cartItems) throws MessagingException;
 }

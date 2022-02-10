@@ -10,6 +10,7 @@ import com.ecommerce.ecommercefinal.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 @RestController
@@ -51,8 +52,8 @@ public class CartController {
         cartService.deleteCartItem(orderNumber,code);
     }
     @GetMapping("/order/{orderNumber}")
-    public List<CartItem> generateOrder(@PathVariable Integer orderNumber)throws ApiRestException{
-        emailService.sendMailWithOrder(cartService.generateOrder(orderNumber).toString());
+    public List<CartItem> generateOrder(@PathVariable Integer orderNumber) throws ApiRestException, MessagingException {
+        emailService.sendMailWithOrder(cartService.generateOrder(orderNumber));
         return cartService.generateOrder(orderNumber);
     }
 }

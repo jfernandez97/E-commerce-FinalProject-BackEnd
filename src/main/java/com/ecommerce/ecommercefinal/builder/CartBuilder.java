@@ -10,12 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CartBuilder {
-    private static Integer ID=0;
 
     public static CartDocument requestToDocumentCreate(CartRequest cartRequest){
         return CartDocument.builder()
                 .email(cartRequest.getEmail())
-                .orderNumber(++ID)
+                .orderNumber((int) Math.floor(Math.random()*(1000-1+1)+1))
                 .products(new ArrayList<>())
                 .createDate(LocalDateTime.now())
                 .status("Generated")
