@@ -48,9 +48,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse getByCode(String code) throws ApiRestException {
-        if(Objects.isNull(repository.findByCode(code))){
-            throw new ApiRestException(code,"Error, el producto que intenta buscar no existe");
-        }
+        validateRequestExists(code);
         return ProductBuilder.documentToResponse(repository.findByCode(code));
     }
 

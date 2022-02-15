@@ -24,10 +24,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .addFilterAfter(new JwtTokenFilter(applicationProperties), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .anyRequest().permitAll();
-//                .antMatchers(HttpMethod.POST,"/users/login").permitAll()
-//                .antMatchers(HttpMethod.POST,"/users/register").permitAll()
-//                .anyRequest().authenticated();
+                .antMatchers(HttpMethod.POST,"/users/login").permitAll()
+                .antMatchers(HttpMethod.POST,"/users/register").permitAll()
+                .anyRequest().authenticated();
     }
     @Bean
     public PasswordEncoder passwordEncoder(){
